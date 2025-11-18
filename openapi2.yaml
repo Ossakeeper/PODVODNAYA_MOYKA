@@ -1,0 +1,1376 @@
+openapi: '3.0.3'
+info:
+  title: Washing Car API
+  version: '0.3'
+tags:
+  - name: Auth
+    description: Аутентификация и регистрация по СМС
+  - name: Users
+    description: Операции с пользователями
+  - name: Cars
+    description: Операции с автомобилями
+  - name: Appointments
+    description: Записи на мойку
+  - name: CarWashes
+    description: Управление автомойками
+  - name: Services
+    description: Управление услугами
+  - name: Analytics
+    description: Аналитика и отчеты
+  - name: Worker
+    description: Функционал для мойщиков
+  - name: Cashier
+    description: Функционал для кассиров
+
+servers:
+  - url: http://localhost:3000/api/v1
+
+paths:
+  /auth/register:
+    post:
+      summary: Начало регистрации нового пользователя
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+              properties:
+                phone:
+                  type: string
+                  example: '+79123456789'
+                name:
+                  type: string
+                  example: 'Иван'
+                email:
+                  type: string
+                  format: email
+                  example: 'ivan@example.com'
+      responses:
+        '200':
+          description: СМС с кодом отправлено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'СМС с кодом отправлено'
+        '409':
+          description: Пользователь уже существует
+        '400':
+          description: Неверный формат номера
+        '503':
+          description: Ошибка отправки СМС
+
+  /auth/verify-registration:
+    post:
+      summary: Подтверждение регистрации по СМС-коду
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+                - code
+              properties:
+                phone:
+                  type: string
+                  example: '+79123456789'
+                code:
+                  type: string
+                  example: '123456'
+      responses:
+        '201':
+          description: Регистрация завершена
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+                  user:
+                    $ref: "#/components/schemas/User"
+        '401':
+          description: Неверный или просроченный код
+        '404':
+          description: Регистрация не начата или номер не найден
+        '429':
+          description: Слишком много попыток
+
+  /auth/login:
+    post:
+      summary: Запрос кода для входа
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+              properties:
+                phone:
+                  type: string
+                  example: '+79123456789'
+      responses:
+        '200':
+          description: СМС с кодом отправлено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'СМС с кодом отправлено'
+        '404':
+          description: Пользователь не найден
+        '400':
+          description: Неверный формат номера
+
+  /auth/verify-login:
+    post:
+      summary: Подтверждение входа по СМС-коду
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+                - code
+              properties:
+                phone:
+                  type: string
+                  example: '+79123456789'
+                code:
+                  type: string
+                  example: '654321'
+      responses:
+        '200':
+          description: Успешный вход
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+                  user:
+                    $ref: "#/components/schemas/User"
+        '401':
+          description: Неверный или просроченный код
+        '404':
+          description: Пользователь не найден
+
+  /auth/refresh-token:
+    post:
+      summary: Обновление JWT токена
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Токен обновлен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+
+  /auth/resend-registration-sms:
+    post:
+      summary: Повторная отправка СМС для регистрации
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+              properties:
+                phone:
+                  type: string
+                  example: '+79123456789'
+      responses:
+        '200':
+          description: СМС отправлено повторно
+        '404':
+          description: Регистрация не начата
+        '429':
+          description: Слишком много запросов
+
+  /auth/resend-login-sms:
+    post:
+      summary: Повторная отправка СМС для входа
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+              properties:
+                phone:
+                  type: string
+                  example: '+79123456789'
+      responses:
+        '200':
+          description: СМС отправлено повторно
+        '404':
+          description: Пользователь не найден
+        '429':
+          description: Слишком много запросов
+
+  /users/{userId}:
+    get:
+      summary: Получить информацию о пользователе
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '403':
+          $ref: "#/components/responses/Unauthorized"
+
+    put:
+      summary: Обновить информацию о пользователе
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        '200':
+          description: Информация обновлена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '403':
+          $ref: "#/components/responses/Unauthorized"
+
+  /users/{userId}/cars:
+    get:
+      summary: Получить машины пользователя
+      tags:
+        - Cars
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CarWId"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '403':
+          $ref: "#/components/responses/Unauthorized"
+
+    post:
+      summary: Добавить машину пользователю
+      tags:
+        - Cars
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CarWOId"
+      responses:
+        '200':
+          description: Машина добавлена
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '403':
+          $ref: "#/components/responses/Unauthorized"
+
+  /cars/{carId}:
+    get:
+      summary: Получить информацию о машине
+      tags:
+        - Cars
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: carId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CarWId"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '403':
+          $ref: "#/components/responses/Unauthorized"
+
+    delete:
+      summary: Удалить машину
+      tags:
+        - Cars
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: carId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Машина удалена
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '403':
+          $ref: "#/components/responses/Unauthorized"
+
+  /cars/{carId}/set-primary:
+    put:
+      summary: Установить машину как основную
+      tags:
+        - Cars
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: carId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Машина установлена как основная
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '403':
+          $ref: "#/components/responses/Unauthorized"
+
+  /car-washes:
+    get:
+      summary: Получить список автомоек
+      tags:
+        - CarWashes
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: city
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: latitude
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+        - name: longitude
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CarWash"
+
+  /car-washes/{carWashId}/services:
+    get:
+      summary: Получить услуги мойки
+      tags:
+        - Services
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: carWashId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: carType
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+
+  /car-washes/{carWashId}/available-slots:
+    get:
+      summary: Получить доступные слоты для записи
+      tags:
+        - Appointments
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: carWashId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: serviceId
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TimeSlot"
+
+  /appointments:
+    post:
+      summary: Создать запись на мойку
+      tags:
+        - Appointments
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppointmentCreate"
+      responses:
+        '201':
+          description: Запись создана
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+        '400':
+          description: Неверные данные записи
+        '409':
+          description: Время уже занято
+
+    get:
+      summary: Получить записи пользователя
+      tags:
+        - Appointments
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled']
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  appointments:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Appointment"
+                  total:
+                    type: integer
+
+  /appointments/{appointmentId}:
+    get:
+      summary: Получить детали записи
+      tags:
+        - Appointments
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: appointmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+        '404':
+          $ref: "#/components/responses/NotFound"
+
+    delete:
+      summary: Отменить запись
+      tags:
+        - Appointments
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: appointmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Запись отменена
+        '400':
+          description: Нельзя отменить запись менее чем за 1 час
+        '404':
+          $ref: "#/components/responses/NotFound"
+
+  /appointments/{appointmentId}/status:
+    put:
+      summary: Обновить статус записи
+      tags:
+        - Appointments
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: appointmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled']
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Статус обновлен
+        '404':
+          $ref: "#/components/responses/NotFound"
+
+  /appointments/{appointmentId}/payment:
+    put:
+      summary: Отметить оплату
+      tags:
+        - Appointments
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: appointmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - payment_method
+              properties:
+                payment_method:
+                  type: string
+                  enum: ['cash', 'card']
+                amount:
+                  type: number
+                  format: float
+      responses:
+        '200':
+          description: Оплата отмечена
+        '404':
+          $ref: "#/components/responses/NotFound"
+
+  /worker/tasks:
+    get:
+      summary: Получить задачи мойщика на сегодня
+      tags:
+        - Worker
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WorkerTask"
+
+  /worker/appointments/{appointmentId}/start:
+    put:
+      summary: Начать работу над заказом
+      tags:
+        - Worker
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: appointmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Работа начата
+        '404':
+          $ref: "#/components/responses/NotFound"
+
+  /worker/appointments/{appointmentId}/complete:
+    put:
+      summary: Завершить работу над заказом
+      tags:
+        - Worker
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: appointmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Работа завершена
+        '404':
+          $ref: "#/components/responses/NotFound"
+
+  /cashier/search:
+    get:
+      summary: Поиск клиента по номеру телефона
+      tags:
+        - Cashier
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: phone
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserWithAppointments"
+        '404':
+          $ref: "#/components/responses/NotFound"
+
+  /cashier/appointments:
+    get:
+      summary: Получить записи на текущий день
+      tags:
+        - Cashier
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: carWashId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Appointment"
+
+    post:
+      summary: Создать запись для клиента без приложения
+      tags:
+        - Cashier
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CashierAppointmentCreate"
+      responses:
+        '201':
+          description: Запись создана
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+        '400':
+          description: Неверные данные записи
+
+  /analytics/revenue:
+    get:
+      summary: Получить аналитику по выручке
+      tags:
+        - Analytics
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: period
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: ['day', 'week', 'month']
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: carWashId
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RevenueAnalytics"
+
+  /analytics/occupancy:
+    get:
+      summary: Получить аналитику по загрузке боксов
+      tags:
+        - Analytics
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: carWashId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OccupancyAnalytics"
+
+  /analytics/services:
+    get:
+      summary: Получить статистику по услугам
+      tags:
+        - Analytics
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: carWashId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServicesAnalytics"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - phone
+        - is_verified
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 'd67082e5-1a28-4534-8166-12c2a1abebc2'
+        phone:
+          type: string
+          example: '+79123456789'
+        name:
+          type: string
+          example: 'Иван'
+        email:
+          type: string
+          format: email
+          example: 'user@example.com'
+        role:
+          type: string
+          enum: ['customer', 'washer', 'cashier', 'admin']
+          example: 'customer'
+        is_verified:
+          type: boolean
+          example: true
+        car_wash_id:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Иван'
+        email:
+          type: string
+          format: email
+          example: 'user@example.com'
+
+    CarWash:
+      type: object
+      required:
+        - id
+        - name
+        - address
+        - city
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Мойка №1'
+        address:
+          type: string
+          example: 'ул. Ленина, 1'
+        city:
+          type: string
+          example: 'Москва'
+        latitude:
+          type: number
+          format: float
+          example: 55.7558
+        longitude:
+          type: number
+          format: float
+          example: 37.6173
+        phone:
+          type: string
+          example: '+74951234567'
+        opening_hours:
+          type: object
+          example: {
+            "monday": {"open": "09:00", "close": "21:00"},
+            "tuesday": {"open": "09:00", "close": "21:00"}
+          }
+        is_active:
+          type: boolean
+          example: true
+        rating:
+          type: number
+          format: float
+          example: 4.5
+
+    CommonCarFields:
+      type: object
+      required:
+        - gosNumber
+        - bodyType
+      properties:
+        vin:
+          type: string
+          example: 'WBAPG7G50BNN17970'
+        gosNumber:
+          type: string
+          example: 'X777XX65'
+        make:
+          type: string
+          example: 'Toyota'
+        model:
+          type: string
+          example: 'Vitz'
+        year:
+          type: integer
+          minimum: 1900
+          example: 2011
+        bodyType:
+          type: string
+          example: 'Sedan'
+        is_primary:
+          type: boolean
+          example: false
+
+    CarWId:
+      allOf:
+        - $ref: '#/components/schemas/CommonCarFields'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              format: int64
+              example: 111111
+
+    CarWOId:
+      allOf:
+        - $ref: '#/components/schemas/CommonCarFields'
+        - type: object
+
+    Service:
+      type: object
+      required:
+        - id
+        - name
+        - price
+        - duration
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Стандартная мойка'
+        description:
+          type: string
+          example: 'Мойка кузова, сушка, уборка салона'
+        price:
+          type: number
+          format: float
+          example: 500.0
+        duration:
+          type: integer
+          example: 30
+        car_type:
+          type: string
+          example: 'sedan'
+        is_active:
+          type: boolean
+          example: true
+
+    TimeSlot:
+      type: object
+      required:
+        - time
+        - is_available
+      properties:
+        time:
+          type: string
+          format: time
+          example: '10:00'
+        is_available:
+          type: boolean
+          example: true
+        box_id:
+          type: integer
+          example: 1
+
+    Appointment:
+      type: object
+      required:
+        - id
+        - user_id
+        - car_id
+        - service_id
+        - box_id
+        - car_wash_id
+        - scheduled_date
+        - scheduled_time
+        - status
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: string
+          format: uuid
+        car_id:
+          type: integer
+        service_id:
+          type: integer
+        box_id:
+          type: integer
+        car_wash_id:
+          type: integer
+        scheduled_date:
+          type: string
+          format: date
+        scheduled_time:
+          type: string
+          format: time
+        scheduled_end_time:
+          type: string
+          format: time
+        status:
+          type: string
+          enum: ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled']
+        total_price:
+          type: number
+          format: float
+        notes:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        car:
+          $ref: "#/components/schemas/CarWId"
+        service:
+          $ref: "#/components/schemas/Service"
+        car_wash:
+          $ref: "#/components/schemas/CarWash"
+
+    AppointmentCreate:
+      type: object
+      required:
+        - car_id
+        - service_id
+        - box_id
+        - car_wash_id
+        - scheduled_date
+        - scheduled_time
+      properties:
+        car_id:
+          type: integer
+        service_id:
+          type: integer
+        box_id:
+          type: integer
+        car_wash_id:
+          type: integer
+        scheduled_date:
+          type: string
+          format: date
+        scheduled_time:
+          type: string
+          format: time
+        notes:
+          type: string
+
+    CashierAppointmentCreate:
+      allOf:
+        - $ref: '#/components/schemas/AppointmentCreate'
+        - type: object
+          required:
+            - customer_phone
+            - customer_name
+          properties:
+            customer_phone:
+              type: string
+            customer_name:
+              type: string
+
+    WorkerTask:
+      type: object
+      required:
+        - appointment_id
+        - scheduled_time
+        - car
+        - service
+      properties:
+        appointment_id:
+          type: integer
+        scheduled_time:
+          type: string
+          format: time
+        scheduled_end_time:
+          type: string
+          format: time
+        car:
+          $ref: "#/components/schemas/CarWId"
+        service:
+          $ref: "#/components/schemas/Service"
+        status:
+          type: string
+          enum: ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled']
+
+    UserWithAppointments:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            appointments:
+              type: array
+              items:
+                $ref: "#/components/schemas/Appointment"
+            cars:
+              type: array
+              items:
+                $ref: "#/components/schemas/CarWId"
+
+    RevenueAnalytics:
+      type: object
+      properties:
+        total_revenue:
+          type: number
+          format: float
+        revenue_by_car_wash:
+          type: array
+          items:
+            type: object
+            properties:
+              car_wash_id:
+                type: integer
+              car_wash_name:
+                type: string
+              revenue:
+                type: number
+                format: float
+        period:
+          type: string
+        date_range:
+          type: object
+          properties:
+            start_date:
+              type: string
+              format: date
+            end_date:
+              type: string
+              format: date
+
+    OccupancyAnalytics:
+      type: object
+      properties:
+        occupancy_rate:
+          type: number
+          format: float
+        occupancy_by_time_slot:
+          type: array
+          items:
+            type: object
+            properties:
+              time_slot:
+                type: string
+              occupancy_percentage:
+                type: number
+                format: float
+        popular_slots:
+          type: array
+          items:
+            type: string
+
+    ServicesAnalytics:
+      type: object
+      properties:
+        services_count:
+          type: array
+          items:
+            type: object
+            properties:
+              service_name:
+                type: string
+              count:
+                type: integer
+        average_check:
+          type: number
+          format: float
+        total_services:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          minimum: 1
+        message:
+          type: string
+        details:
+          type: object
+
+  responses:
+    NotFound:
+      description: Сущность не найдена
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthorized:
+      description: Неавторизованный доступ
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    BadRequest:
+      description: Неверный запрос
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+security:
+  - bearerAuth: []
