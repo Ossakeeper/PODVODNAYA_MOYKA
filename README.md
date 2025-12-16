@@ -62,4 +62,5 @@
 ```
 ### Ссылки
 
-[ABC](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UseCaseTT.md)
+[UserCase](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UseCaseTT.md)
+[OpenAPI документация](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/api-docs.yaml)
