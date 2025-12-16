@@ -62,12 +62,15 @@
 ```
 ### Ссылки
 
-- [UserCase](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UseCaseTT.md)
+- [UseCases](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UseCaseTT.md)
+  ![UseCases](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/Use_Cases.svg "UseCases")
 - [OpenAPI документация](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/api-docs.yaml)
 - [ERD](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/ERD.svg)
   ![ERD](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/ERD.svg "ERD")
 - [Sequence Diagram для авторизации](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_AuthRegistr.puml)
+  ![SD_auth](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_auth.svg "SD_auth")
 - [Sequence Diagram для записи](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_appointment.puml)
+  ![SD_appoint](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_appointment.svg "SD_app")
 - [User story](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UserStories.md)
 - [User story Mapping](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/User%20Story%20Mapping.unidraw)
   ![User story Mapping](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/User%20Story%20Mapping.svg "User Story Mapping")
