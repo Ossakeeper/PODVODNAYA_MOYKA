@@ -70,6 +70,5 @@
 |**Sequence Diagram для записи**| [Sequence Diagram для записи](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_appointment.puml) | <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_appointment.svg" width="300" alt="SD_app"> |
 |**User story**| [User story](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UserStories.md) |  |
 |**User story Mapping**| [User story Mapping](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/User%20Story%20Mapping.unidraw) | <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/User%20Story%20Mapping.svg" width="300" alt="User Story Mapping"> |
-|**Status Model**| [Status Model](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UserStories.md) |  |
+|**Status Model**| [Status Model](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/StatusModel.uml) | <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/StatusModel.svg" width="300" alt="Status Model"> |
 |**C4**| [C4](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/C4_model.unidraw) | <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/C4_model.png" width="300" alt="C4"> |
-- [Status Model](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/StatusModel.uml)
