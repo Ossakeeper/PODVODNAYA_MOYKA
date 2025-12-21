@@ -63,7 +63,7 @@
 ### Ссылки
 |Название               |Файл              |
 |-----------------------|------------------|
-|**UseCases**|- [UseCases](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UseCaseTT.md) ![UseCases](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/Use_Cases.svg "UseCases") |
+|**UseCases**|- [UseCases](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UseCaseTT.md) <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/Use_Cases.svg" width="300" alt="UseCases"> |
 
 - [OpenAPI документация](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/api-docs.yaml)
 - [ERD](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/ERD.svg)
