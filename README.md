@@ -64,17 +64,12 @@
 |Название               |Файл              |Изображение            |
 |-----------------------|------------------|-----------------------|
 |**UseCases**| [UseCases](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UseCaseTT.md) | <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/Use_Cases.svg" width="300" alt="UseCases"> |
-|**OpenAPI документация**| [UseCases](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/api-docs.yaml) |  |
-- [ERD](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/ERD.svg)
-  <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/ERD.svg" width="300" alt="Пример">
-  ![ERD](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/ERD.svg "ERD")
-- [Sequence Diagram для авторизации](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_AuthRegistr.puml)
-  ![SD_auth](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_auth.svg "SD_auth")
-- [Sequence Diagram для записи](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_appointment.puml)
-  ![SD_appoint](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_appointment.svg "SD_app")
-- [User story](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UserStories.md)
-- [User story Mapping](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/User%20Story%20Mapping.unidraw)
-  ![User story Mapping](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/User%20Story%20Mapping.svg "User Story Mapping")
+|**OpenAPI документация**| [OpenAPI](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/api-docs.yaml) |  |
+|**ERD**| [ERD](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/ERD.svg) | <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/ERD.svg" width="300" alt="ERD"> |
+|**Sequence Diagram для авторизации**| [Sequence Diagram для авторизации](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_AuthRegistr.puml) | <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_auth.svg" width="300" alt="SD_auth"> |
+|**Sequence Diagram для записи**| [Sequence Diagram для записи](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_appointment.puml) | <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_appointment.svg" width="300" alt="SD_app"> |
+|**User story**| [User story](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UserStories.md) |  |
+|**User story Mapping**| [User story Mapping](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/User%20Story%20Mapping.unidraw) | <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/User%20Story%20Mapping.svg" width="300" alt="User Story Mapping"> |
+|**Status Model**| [Status Model](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UserStories.md) |  |
+|**C4**| [C4](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/C4_model.unidraw) | <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/C4_model.png" width="300" alt="C4"> |
 - [Status Model](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/StatusModel.uml)
-- [C4](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/C4_model.unidraw)
-  ![C4](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/C4_model.png "C4")
