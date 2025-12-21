@@ -67,6 +67,7 @@
 
 - [OpenAPI документация](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/api-docs.yaml)
 - [ERD](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/ERD.svg)
+  <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/ERD.svg" width="300" alt="Пример">
   ![ERD](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/ERD.svg "ERD")
 - [Sequence Diagram для авторизации](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_AuthRegistr.puml)
   ![SD_auth](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/SD_auth.svg "SD_auth")
