@@ -61,9 +61,9 @@
 Минимальное количество машин: 0 или 290 (5 боксов * 58) машин/день.
 ```
 ### Ссылки
-|Название               |Файл              |
-|-----------------------|------------------|
-|**UseCases**|- [UseCases](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UseCaseTT.md) <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/Use_Cases.svg" width="300" alt="UseCases"> |
+|Название               |Файл              |Изображение            |
+|-----------------------|------------------|-----------------------|
+|**UseCases**| [UseCases](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/UseCaseTT.md) | <img src="https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/Use_Cases.svg" width="300" alt="UseCases"> |
 
 - [OpenAPI документация](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/api-docs.yaml)
 - [ERD](https://github.com/Ossakeeper/PODVODNAYA_MOYKA/blob/main/ERD.svg)
